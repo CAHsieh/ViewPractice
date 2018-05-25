@@ -1,5 +1,6 @@
 package pet.ca.viewpractice
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.support.v4.app.Fragment
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_view.view.*
 import kotlinx.android.synthetic.main.view_traditional_clock.*
+import pet.ca.viewpractice.CustomView.TraditionalClock
 
 class PageFragment : Fragment() {
 
@@ -48,6 +50,13 @@ class PageFragment : Fragment() {
         when (layoutRes) {
             R.layout.view_traditional_clock -> {
                 traditionalClock.startClock()
+                val timerListener = object : TraditionalClock.TimerListener {
+                    @SuppressLint("SetTextI18n")
+                    override fun onTimeUpdate(h: Int, m: Int, s: Int) {
+                        time.text = h.toString() + ":" + m.toString() + ":" + s.toString()
+                    }
+                }
+                traditionalClock.timerListener = timerListener
             }
 
         }

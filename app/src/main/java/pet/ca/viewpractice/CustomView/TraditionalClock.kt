@@ -11,6 +11,8 @@ import java.util.*
 
 class TraditionalClock : View {
 
+    public var timerListener: TimerListener? = null
+
     private val paint: Paint = Paint()
 
     constructor(context: Context?) : super(context)
@@ -88,7 +90,7 @@ class TraditionalClock : View {
         val hourOffsetDegree = minute / 2f
         canvas.save()
         canvas.translate((measuredWidth / 2).toFloat(), (measuredWidth / 2).toFloat())
-        canvas.rotate((360f - hourBaseDegree) + hourOffsetDegree)
+        canvas.rotate(hourBaseDegree + hourOffsetDegree)
         canvas.drawLine(0f, 0f, 0f, -measuredWidth / 4.5f, paint)
         canvas.restore()
 
@@ -112,6 +114,8 @@ class TraditionalClock : View {
         canvas.rotate(secDegree.toFloat())
         canvas.drawLine(0f, 0f, 0f, -measuredWidth / 3.5f, paint)
         canvas.restore()
+
+        timerListener?.onTimeUpdate(hour, minute, second)
     }
 
     private var running: Boolean = false
@@ -128,5 +132,10 @@ class TraditionalClock : View {
 
     fun stopClock() {
         running = false
+    }
+
+
+    interface TimerListener {
+        fun onTimeUpdate(h: Int, m: Int, s: Int)
     }
 }
