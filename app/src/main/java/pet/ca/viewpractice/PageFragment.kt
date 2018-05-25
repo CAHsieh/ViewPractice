@@ -52,4 +52,14 @@ class PageFragment : Fragment() {
 
         }
     }
+
+    override fun onStop() {
+        super.onStop()
+        when (layoutRes) {
+            R.layout.view_traditional_clock -> {
+                traditionalClock.stopClock()
+            }
+
+        }
+    }
 }
