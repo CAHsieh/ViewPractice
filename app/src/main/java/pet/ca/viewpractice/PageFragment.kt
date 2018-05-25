@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_view.view.*
+import kotlinx.android.synthetic.main.view_traditional_clock.*
 
 class PageFragment : Fragment() {
 
@@ -41,4 +42,14 @@ class PageFragment : Fragment() {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        when (layoutRes) {
+            R.layout.view_traditional_clock -> {
+                traditionalClock.startClock()
+            }
+
+        }
+    }
 }

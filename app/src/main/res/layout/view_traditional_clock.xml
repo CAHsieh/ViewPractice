@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <pet.ca.viewpractice.CustomView.TraditionalClock
+        android:id="@+id/traditionalClock"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
