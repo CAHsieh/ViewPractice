@@ -21,8 +21,8 @@ class MainActivity : AppCompatActivity() {
 
     class PagerAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager) {
 
-        val titles: Array<String> = arrayOf("Clock")
-        val resIds: Array<Int> = arrayOf(R.layout.view_traditional_clock)
+        val titles: Array<String> = arrayOf("Clock","Dashboard")
+        val resIds: Array<Int> = arrayOf(R.layout.view_traditional_clock, R.layout.fragment_dashboard)
 
         override fun getItem(position: Int): Fragment {
             return PageFragment.newInstance(resIds[position])

@@ -7,9 +7,11 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
+import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.fragment_view.view.*
 import kotlinx.android.synthetic.main.view_traditional_clock.*
-import pet.ca.viewpractice.CustomView.TraditionalClock
+import pet.ca.viewpractice.customView.TraditionalClock
 
 class PageFragment : Fragment() {
 
@@ -57,6 +59,40 @@ class PageFragment : Fragment() {
                     }
                 }
                 traditionalClock.timerListener = timerListener
+            }
+
+            R.layout.fragment_dashboard -> {
+
+                dashboard.setCurrent(50)
+                seek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                        if (fromUser) {
+                            dashboard.setCurrent(progress)
+                        }
+                    }
+
+                    override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                    }
+
+                    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    }
+
+                })
+
+                limitSetter.setOnClickListener {
+                    val max: Int = upperLimit.text.toString().toInt()
+                    seek.max = max
+                    dashboard.smoothSetMax(max)
+                }
+
+                valueSetter.setOnClickListener {
+                    val v: Int = value.text.toString().toInt()
+                    val result = dashboard.smoothToCurrent(v)
+                    if (result != v) {
+                        value.setText(result.toString())
+                    }
+                    seek.progress = result
+                }
             }
 
         }
