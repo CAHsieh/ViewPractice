@@ -1,4 +1,4 @@
-package pet.ca.viewpractice.CustomView
+package pet.ca.viewpractice.customView
 
 import android.content.Context
 import android.graphics.Canvas
