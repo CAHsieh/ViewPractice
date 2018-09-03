@@ -9,11 +9,13 @@ package pet.ca.viewpractice.customView
   4.設定max值 done.
   5.設定Current值 done.
   6.setCurrent及smoothToCurrent done.
-  7.smooth要有加速及反彈效果
+  7.smooth要有加速及反彈效果 done.
 
  */
 
+import android.animation.Keyframe
 import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -73,9 +75,17 @@ class DashboardView : View {
 
     public fun smoothToCurrent(current: Int): Int {
         val to: Int = if (current > upperLimit) upperLimit else current
-        val animator: ObjectAnimator = ObjectAnimator.ofInt(this, "current", this.current, to)
+        val relay = if (current >= this.current) current + 20 else current - 20
+
+        val keyframe1 = Keyframe.ofInt(0f, this.current)
+        val keyframe2 = Keyframe.ofInt(0.5f, relay)
+        val keyframe3 = Keyframe.ofInt(1f, to)
+        val holder = PropertyValuesHolder.ofKeyframe("current", keyframe1, keyframe2, keyframe3)
+        val animator = ObjectAnimator.ofPropertyValuesHolder(this, holder)
+
+//        val animator: ObjectAnimator = ObjectAnimator.ofInt(this, "current", this.current, to)
         animator.interpolator = AccelerateDecelerateInterpolator()
-        animator.duration = 500
+        animator.duration = 1000
         animator.start()
 
         return to
