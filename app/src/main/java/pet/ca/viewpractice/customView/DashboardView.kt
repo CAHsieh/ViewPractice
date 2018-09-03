@@ -4,8 +4,8 @@ package pet.ca.viewpractice.customView
   儀表板View
 
   1.有一個弧形的線條 done.
-  2.弧型線條顏色控制(attr)
-  3.弧形內顯示數值or百分比 (attr控制顯示哪個)
+  2.弧型線條顏色控制(attr) done.
+  3.弧形內顯示數值or百分比 (attr控制顯示哪個) done.
   4.設定max值 done.
   5.設定Current值 done.
   6.setCurrent及smoothToCurrent done.
@@ -17,13 +17,11 @@ import android.animation.Keyframe
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
+import pet.ca.viewpractice.R
 import pet.ca.viewpractice.Utils
 
 
@@ -36,10 +34,43 @@ class DashboardView : View {
     private var rate: Float = 0f
     private var upperLimit: Int = 100
     private var current: Int = 0
+    private var display: Int = 0
+    private var progressColor: Int = Color.RED
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context?) : super(context) {
+        upperLimit = 100
+        current = 50
+        display = 0
+        progressColor = Color.RED
+        rate = (current.toFloat() / upperLimit)
+    }
+
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+        context?.let { c ->
+            attrs?.let {
+                parseAttr(c, it)
+            }
+        }
+        rate = (current.toFloat() / upperLimit)
+    }
+
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        context?.let { c ->
+            attrs?.let {
+                parseAttr(c, it)
+            }
+        }
+        rate = (current.toFloat() / upperLimit)
+    }
+
+    private fun parseAttr(context: Context, attrs: AttributeSet) {
+        val typeArray = context.obtainStyledAttributes(attrs, R.styleable.DashboardView)
+        upperLimit = typeArray.getInt(R.styleable.DashboardView_upperLimit, 100)
+        current = typeArray.getInt(R.styleable.DashboardView_current, 50)
+        display = typeArray.getInteger(R.styleable.DashboardView_display, 0)
+        progressColor = typeArray.getColor(R.styleable.DashboardView_color, Color.RED)
+        typeArray.recycle()
+    }
 
     public fun setMax(upperLimit: Int) {
         this.upperLimit = upperLimit
@@ -75,7 +106,8 @@ class DashboardView : View {
 
     public fun smoothToCurrent(current: Int): Int {
         val to: Int = if (current > upperLimit) upperLimit else current
-        val relay = if (current >= this.current) current + 20 else current - 20
+        val relay = if (current >= this.current) to + this.upperLimit / 4
+        else to - this.upperLimit / 4
 
         val keyframe1 = Keyframe.ofInt(0f, this.current)
         val keyframe2 = Keyframe.ofInt(0.5f, relay)
@@ -125,6 +157,7 @@ class DashboardView : View {
 
         //先畫dashboard基準線
         canvas?.save()
+        paint.reset()
         paint.color = Color.BLACK
         paint.strokeWidth = Utils.dpToPixels(1f)
         paint.style = Paint.Style.STROKE
@@ -132,14 +165,46 @@ class DashboardView : View {
         canvas?.restore()
 
         //根據目前的rate畫線條
-
         canvas?.save()
-        paint.color = Color.RED
+        paint.reset()
+        paint.color = progressColor
         paint.strokeWidth = Utils.dpToPixels(5f)
         paint.style = Paint.Style.STROKE
         val sweep: Float = -240f * rate
         val start: Float = 30f - 240f * (1 - rate)
         canvas?.drawArc(rect, start, sweep, false, paint)
+        canvas?.restore()
+
+        //畫數字
+        canvas?.save()
+        paint.reset()
+        paint.color = Color.BLACK
+        paint.textAlign = Paint.Align.CENTER
+        paint.typeface = Typeface.SANS_SERIF
+        val radius = if (rect.height() > rect.width()) {
+            rect.width() / 2
+        } else {
+            rect.height() / 2
+        }
+
+        when (display) {
+            0 -> {
+                //Actual
+                paint.textSize = if (current.toString().length > 2) {
+                    radius * 2 / (1.5f + (current.toString().length - 2) * 0.5f)
+                } else {
+                    radius * 2 / 1.5f
+                }
+                canvas?.drawText(current.toString(), rect.centerX(), rect.centerY() + radius * Math.cos(Math.PI / 3).toFloat(), paint)
+            }
+
+            1 -> {
+                //Rate
+                val rate = ((current.toFloat() / upperLimit.toFloat()) * 100).toInt()
+                paint.textSize = radius * 2 / (2.0f + (rate.toString().length - 1) * 0.5f)
+                canvas?.drawText(rate.toString() + "%", rect.centerX(), rect.centerY() + radius * Math.cos(Math.PI / 3).toFloat(), paint)
+            }
+        }
         canvas?.restore()
     }
 }

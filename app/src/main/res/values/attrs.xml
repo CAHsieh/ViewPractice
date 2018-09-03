@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DashboardView">
+        <attr name="upperLimit" format="integer" />
+        <attr name="current" format="integer" />
+        <attr name="color" format="color" />
+        <attr name="display" format="enum">
+            <enum name="actual" value="0" />
+            <enum name="rate" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>

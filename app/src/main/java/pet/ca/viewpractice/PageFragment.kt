@@ -63,7 +63,6 @@ class PageFragment : Fragment() {
 
             R.layout.fragment_dashboard -> {
 
-                dashboard.setCurrent(50)
                 seek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                         if (fromUser) {
